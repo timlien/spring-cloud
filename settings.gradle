@@ -1,2 +1,5 @@
 rootProject.name = 'spring-cloud'
+include 'account'
+include 'card'
+include 'loan'
 
