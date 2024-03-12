@@ -9,5 +9,8 @@ spring:
         native:
           searchLocations: "classpath:/config"
 
+encrypt:
+  key: 3A2A167DDDC28783744B92EAE8191
+
 server:
   port: 8071
