@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.tingshulien'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 
 java {
     sourceCompatibility = '17'
@@ -42,4 +42,10 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named("bootBuildImage") {
+    builder = "dashaun/builder:base"
+    environment = ["BP_JVM_VERSION" : "17"]
+    imageName = "timlien/${project.name}:${project.version}"
 }
