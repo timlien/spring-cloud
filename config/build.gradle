@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.tingshulien'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 
 java {
     sourceCompatibility = '17'
@@ -22,6 +22,8 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-config-server'
+    implementation 'org.springframework.cloud:spring-cloud-config-monitor'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -33,4 +35,11 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named("bootBuildImage") {
+    buildpacks = ["urn:cnb:builder:paketo-buildpacks/java", "gcr.io/paketo-buildpacks/health-checker:latest"]
+    environment = ["BP_JVM_VERSION" : "17", "BP_HEALTH_CHECKER_ENABLED" : "true"]
+    imageName = "timlien/${project.name}:${project.version}"
+    createdDate = "now"
 }

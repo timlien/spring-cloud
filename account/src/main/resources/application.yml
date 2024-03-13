@@ -1,8 +1,9 @@
 server:
   port: 8080
+
 spring:
   application:
-    name: account
+    name: account-service
   profiles:
     active: prod
   datasource:
@@ -19,4 +20,15 @@ spring:
       ddl-auto: create
     show-sql: true
   config:
-    import: optional:configserver:http://localhost:8071
+    import: optional:configserver:http://config:8071
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    password: "{cipher}16ab130f4bbbbc8eb82310f386997c548855a0ce440bcf4fa66268c2c4b5e3e4"
-  jpa:
-    show-sql: false

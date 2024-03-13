@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
     compileOnly 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -56,7 +57,10 @@ tasks.named('test') {
 }
 
 tasks.named("bootBuildImage") {
-    builder = "dashaun/builder:base"
-    environment = ["BP_JVM_VERSION" : "17"]
+    buildpacks = ["urn:cnb:builder:paketo-buildpacks/java", "gcr.io/paketo-buildpacks/health-checker:latest"]
+    environment = ["BP_JVM_VERSION" : "17", "BP_HEALTH_CHECKER_ENABLED" : "true"]
     imageName = "timlien/${project.name}:${project.version}"
+    createdDate = "now"
 }
+
+

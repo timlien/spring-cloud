@@ -1,0 +1,79 @@
+version: "3.7"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: base-network-service
+
+  config-server:
+    image: timlien/config:1.0.0
+    container_name: config-server
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/cnb/process/health-check"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: base-resource-service
+    environment:
+      THC_PATH: /actuator/health
+      THC_PORT: 8071
+
+  account-service:
+    image: timlien/account:1.0.0
+    container_name: account-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: base-application-service
+
+  loan-service:
+    image: timlien/loan:1.0.0
+    container_name: loan-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: base-application-service
+
+  card-service:
+    image: timlien/card:1.0.0
+    container_name: card-service
+    ports:
+      - "9000:9000"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: base-application-service
+
+networks:
+  spring-cloud-network:
+    driver: bridge
