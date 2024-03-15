@@ -6,18 +6,21 @@ spring:
   profiles:
     active: prod
   datasource:
-    url: jdbc:h2:mem:loan
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://loan-database:3306/loan?useSSL=false&allowPublicKeyRetrieval=true
+    username: "root"
+    password: "0000"
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
     show-sql: true
+  flyway:
+    enabled: true
+    baseline-version: 1.0.0
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    default-schema: loan
   config:
     import: optional:configserver:http://config:8071
   rabbitmq:

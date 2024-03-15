@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  base-network-service:
+    networks:
+      - spring-cloud-network
+
+  base-resource-service:
+    extends:
+      service: base-network-service
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 700m
+
+  base-application-service:
+    extends:
+      service: base-resource-service
+    healthcheck:
+      test: [ "CMD", "/cnb/process/health-check" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    environment:
+      SPRING_PROFILES_ACTIVE: "test"
+      SPRING_CONFIG_IMPORT: "configserver:http://config-server:8071"
+
+  base-mysql-service:
+    extends:
+      service: base-resource-service
+    healthcheck:
+      test: [ "CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    environment:
+      MYSQL_ROOT_PASSWORD: "0000"
+

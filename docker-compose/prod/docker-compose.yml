@@ -1,6 +1,7 @@
 version: "3.7"
 
 services:
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -14,7 +15,7 @@ services:
       retries: 10
       start_period: 5s
     extends:
-      file: common-config.yml
+      file: base-compose.yml
       service: base-network-service
 
   config-server:
@@ -26,13 +27,13 @@ services:
       rabbitmq:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "/cnb/process/health-check"]
+      test: [ "CMD", "/cnb/process/health-check" ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 5s
     extends:
-      file: common-config.yml
+      file: base-compose.yml
       service: base-resource-service
     environment:
       THC_PATH: /actuator/health
@@ -46,9 +47,22 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+      account-database:
+        condition: service_healthy
     extends:
-      file: common-config.yml
+      file: base-compose.yml
       service: base-application-service
+
+  account-database:
+    image: mysql:8.0
+    container_name: account-database
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "account"
+    extends:
+      file: base-compose.yml
+      service: base-mysql-service
 
   loan-service:
     image: timlien/loan:1.0.0
@@ -58,9 +72,22 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+      loan-database:
+        condition: service_healthy
     extends:
-      file: common-config.yml
+      file: base-compose.yml
       service: base-application-service
+
+  loan-database:
+    image: mysql:8.0
+    container_name: loan-database
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: "loan"
+    extends:
+      file: base-compose.yml
+      service: base-mysql-service
 
   card-service:
     image: timlien/card:1.0.0
@@ -70,9 +97,22 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+      card-database:
+        condition: service_healthy
     extends:
-      file: common-config.yml
+      file: base-compose.yml
       service: base-application-service
+
+  card-database:
+    image: mysql:8.0
+    container_name: card-database
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: "card"
+    extends:
+      file: base-compose.yml
+      service: base-mysql-service
 
 networks:
   spring-cloud-network:
