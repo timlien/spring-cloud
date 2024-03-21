@@ -19,6 +19,9 @@ services:
       service: base-network-service
 
   config-server:
+    extends:
+      file: base-compose.yml
+      service: base-resource-service
     image: timlien/config:1.0.0
     container_name: config-server
     ports:
@@ -32,26 +35,39 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-    extends:
-      file: base-compose.yml
-      service: base-resource-service
     environment:
       THC_PATH: /actuator/health
       THC_PORT: 8071
 
+  eureka-server:
+    extends:
+      file: base-compose.yml
+      service: base-application-service
+    image: timlien/eureka:1.0.0
+    container_name: eureka-server
+    ports:
+      - "8070:8070"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      THC_PORT: 8070
+
   account-service:
+    extends:
+      file: base-compose.yml
+      service: base-application-service
     image: timlien/account:1.0.0
     container_name: account-service
     ports:
       - "8080:8080"
     depends_on:
-      config-server:
+      eureka-server:
         condition: service_healthy
       account-database:
         condition: service_healthy
-    extends:
-      file: base-compose.yml
-      service: base-application-service
+    environment:
+      THC_PORT: 8080
 
   account-database:
     image: mysql:8.0
@@ -65,18 +81,20 @@ services:
       service: base-mysql-service
 
   loan-service:
+    extends:
+      file: base-compose.yml
+      service: base-application-service
     image: timlien/loan:1.0.0
     container_name: loan-service
     ports:
       - "8090:8090"
     depends_on:
-      config-server:
+      eureka-server:
         condition: service_healthy
       loan-database:
         condition: service_healthy
-    extends:
-      file: base-compose.yml
-      service: base-application-service
+    environment:
+      THC_PORT: 8090
 
   loan-database:
     image: mysql:8.0
@@ -90,18 +108,20 @@ services:
       service: base-mysql-service
 
   card-service:
+    extends:
+      file: base-compose.yml
+      service: base-application-service
     image: timlien/card:1.0.0
     container_name: card-service
     ports:
       - "9000:9000"
     depends_on:
-      config-server:
+      eureka-server:
         condition: service_healthy
       card-database:
         condition: service_healthy
-    extends:
-      file: base-compose.yml
-      service: base-application-service
+    environment:
+      THC_PORT: 8090
 
   card-database:
     image: mysql:8.0

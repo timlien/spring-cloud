@@ -12,7 +12,7 @@ services:
       replicas: 1
       resources:
         limits:
-          memory: 700m
+          memory: 1024m
 
   base-application-service:
     extends:
@@ -26,6 +26,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: "test"
       SPRING_CONFIG_IMPORT: "configserver:http://config-server:8071"
+      THC_PATH: /actuator/health
 
   base-mysql-service:
     extends:
@@ -38,4 +39,3 @@ services:
       start_period: 5s
     environment:
       MYSQL_ROOT_PASSWORD: "0000"
-

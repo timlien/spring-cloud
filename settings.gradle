@@ -3,4 +3,5 @@ include 'account'
 include 'card'
 include 'loan'
 include 'config'
+include 'eureka'
 

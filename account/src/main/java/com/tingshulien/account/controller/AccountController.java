@@ -60,10 +60,19 @@ public class AccountController {
       summary = "Fetch Account REST API",
       description = "REST API to fetch Customer & Account details from Bank"
   )
-  @ApiResponse(
-      responseCode = "200",
-      description = "HTTP Status OK"
-  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK"
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @GetMapping("fetch")
   public ResponseEntity<CustomerDto> fetchAccount(
       @RequestParam @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits") @Parameter(example = "0910123456") String mobileNumber) {
