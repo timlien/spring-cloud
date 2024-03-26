@@ -53,6 +53,20 @@ services:
     environment:
       THC_PORT: 8070
 
+  gateway-server:
+    extends:
+      file: base-compose.yml
+      service: base-application-service
+    image: timlien/gateway:1.0.0
+    container_name: gateway-server
+    ports:
+      - "8072:8072"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      THC_PORT: 8072
+
   account-service:
     extends:
       file: base-compose.yml
@@ -121,7 +135,7 @@ services:
       card-database:
         condition: service_healthy
     environment:
-      THC_PORT: 8090
+      THC_PORT: 9000
 
   card-database:
     image: mysql:8.0

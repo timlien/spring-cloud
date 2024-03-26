@@ -13,6 +13,8 @@ services:
       resources:
         limits:
           memory: 1024m
+    environment:
+      TZ: "Asia/Taipei"
 
   base-application-service:
     extends:
@@ -26,7 +28,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: "dev"
       SPRING_CONFIG_IMPORT: "configserver:http://config-server:8071"
-      THC_PATH: /actuator/health
+      THC_PATH: "/actuator/health"
 
   base-mysql-service:
     extends:
