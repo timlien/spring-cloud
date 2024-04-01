@@ -2,6 +2,21 @@ version: "3.7"
 
 services:
 
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: base-compose.yml
+      service: base-network-service
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -63,6 +78,8 @@ services:
       - "8072:8072"
     depends_on:
       eureka-server:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     environment:
       THC_PORT: 8072

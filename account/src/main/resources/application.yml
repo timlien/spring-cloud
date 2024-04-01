@@ -96,3 +96,22 @@ resilience4j: # https://resilience4j.readme.io/docs/getting-started-3#configurat
         exponentialBackoffMultiplier: 2
         ignore-exceptions:
           - java.lang.NullPointerException
+    instances:
+      fetch-customer-detail:
+        maxAttempts: 2
+        waitDuration: 500
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 3
+        ignore-exceptions:
+          - java.lang.NullPointerException
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 1000
+        limitRefreshPeriod: 1000
+        timeoutDuration: 1000
+    instances:
+      fetch-customer-detail:
+        limitForPeriod: 1
+        limitRefreshPeriod: 1000
+        timeoutDuration: 500

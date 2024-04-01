@@ -3,6 +3,7 @@ package com.tingshulien.account.controller;
 import com.tingshulien.account.dto.CustomerDetailDto;
 import com.tingshulien.account.dto.ErrorResponseDto;
 import com.tingshulien.account.service.CustomerService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,6 +52,7 @@ public class CustomerController {
       )
   })
   @Retry(name = "fetch-customer-detail")
+  @RateLimiter(name = "fetch-customer-detail")
   @GetMapping("/v1/fetchCustomerDetail")
   public ResponseEntity<CustomerDetailDto> fetchCustomerDetail(
       @RequestParam @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits") @Parameter(example = "0910123456") String mobileNumber) {
