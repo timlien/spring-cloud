@@ -48,8 +48,14 @@ public class CustomerServiceImpl implements CustomerService {
     ResponseEntity<LoanDto> loanDtoResponseEntity = loanFeignClient.fetchLoanDetails(mobileNumber);
 
     customerDetailDto.setAccountDto(accountDto);
-    customerDetailDto.setCardDto(cardDtoResponseEntity.getBody());
-    customerDetailDto.setLoanDto(loanDtoResponseEntity.getBody());
+
+    if (cardDtoResponseEntity != null) {
+      customerDetailDto.setCardDto(cardDtoResponseEntity.getBody());
+    }
+
+    if (loanDtoResponseEntity != null) {
+      customerDetailDto.setLoanDto(loanDtoResponseEntity.getBody());
+    }
 
     return customerDetailDto;
   }

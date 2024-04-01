@@ -29,6 +29,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 management:
   endpoints:
@@ -68,3 +72,27 @@ info: # This is for the /actuator/info endpoint to be seen in eureka dashboard
     name: "account"
     description: "Account Service for Bank Application"
     version: "1.0.0"
+
+logging:
+  level:
+    com:
+      tingshulien:
+        account: DEBUG
+
+resilience4j: # https://resilience4j.readme.io/docs/getting-started-3#configuration
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 500
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        ignore-exceptions:
+          - java.lang.NullPointerException
