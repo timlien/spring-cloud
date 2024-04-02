@@ -35,6 +35,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics: # This is for the /actuator/metrics endpoint to micrometer
+    tags:
+      application: ${spring.application.name}
 
 encrypt:
   key: 3A2A167DDDC28783744B92EAE8191

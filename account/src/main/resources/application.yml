@@ -53,6 +53,9 @@ management:
   info: # This is for the /actuator/info endpoint
     env:
       enabled: true
+  metrics: # This is for the /actuator/metrics endpoint to micrometer
+    tags:
+      application: ${spring.application.name}
 
 endpoints: # Enable the /actuator/shutdown endpoint
   shutdown:
